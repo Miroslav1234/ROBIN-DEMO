@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mvblog-webui
+spec:
+  selector:
+    matchLabels:
+      run: mvblog-webui
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        run: mvblog-webui
+    spec:
+      volumes:
+      - name: mvblog-webui-pv
+        persistentVolumeClaim:
+          claimName: mvblog-webui-pvc
+      containers:
+      - name: mvblog-webui
+        image: mirek1234/mvblog-webui
+        lifecycle:
+          postStart:
+            exec:
+              command: ['bash', '-c', 'chmod 777 /var/www/html/temp/sessions']
+        ports:
+        - containerPort: 80 
+        volumeMounts:
+        - mountPath: "/var/www/html/temp/sessions"
+          name: mvblog-webui-pv
+          subPath: sessions
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: zone
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            foo: bar
+
