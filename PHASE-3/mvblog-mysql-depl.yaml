@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mvblog-mysql
+spec:
+  selector:
+    matchLabels:
+      run: mvblog-mysql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: mvblog-mysql
+    spec:
+      volumes:
+      - name: mvblog-mysql-pv
+        persistentVolumeClaim:
+          claimName: mvblog-mysql-pvc
+      containers:
+      - name: mvblog-mysql
+        image: mirek1234/mvblog-mysql
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - mountPath: "/var/lib/mysql"
+          name: mvblog-mysql-pv
+          subPath: mysql
