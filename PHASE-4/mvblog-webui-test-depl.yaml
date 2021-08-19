@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mvblog-webui-test
+spec:
+  selector:
+    matchLabels:
+      run: mvblog-webui-test
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: mvblog-webui-test
+    spec:
+      containers:
+      - name: mvblog-webui
+        image: mirek1234/mvblog-webui
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - bash
+              - "-c"
+              - |
+                set -ex
+                cd config
+                cat local.neon | sed 's/mvblog-mysql/mvblog-mysql-test-0.mvblog-mysql-test/g' >local.neon2
+                mv local.neon2 local.neon 
+                cd ../app/Presenters/templates/Homepage
+                cat default.latte | sed 's/blog/blog - Test/g' >default.latte2
+                mv default.latte2 default.latte
+        ports:
+        - containerPort: 80 

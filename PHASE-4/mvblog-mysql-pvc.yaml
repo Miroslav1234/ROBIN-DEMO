@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+   name: mvblog-mysql-pvc 
+   annotations:
+      robin.io/replication: "2"
+      robin.io/faultdomain: host
+spec:
+   accessModes:
+       - ReadWriteOnce
+   resources:
+       requests:
+          storage: 1Gi
+   storageClassName: robin

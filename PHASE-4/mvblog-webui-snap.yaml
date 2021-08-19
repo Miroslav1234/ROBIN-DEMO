@@ -1,0 +1,12 @@
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: mvblog-webui-snap
+  labels:
+    app.kubernetes.io/instance: robin
+    app.kubernetes.io/managed-by: robin.io
+    app.kubernetes.io/name: robin
+spec:
+  volumeSnapshotClassName: robin-snapshotclass
+  source:
+    persistentVolumeClaimName: mvblog-webui-pvc

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mvblog-mysql-test
+spec:
+  selector:
+    matchLabels:
+      run: mvblog-mysql-test
+  serviceName: mvblog-mysql-test
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: mvblog-mysql-test
+    spec:
+      containers:
+      - name: mvblog-mysql
+        image: mirek1234/mvblog-mysql
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - mountPath: "/var/lib/mysql"
+          name: datavol
+          subPath: mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: datavol
+      annotations:
+         robin.io/replication: "2"
+         robin.io/faultdomain: host
+    spec:
+      storageClassName: robin
+      dataSource:
+        name: mvblog-mysql-snap
+        kind: VolumeSnapshot
+        apiGroup: snapshot.storage.k8s.io
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+

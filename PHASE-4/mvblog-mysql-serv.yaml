@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mvblog-mysql
+  labels:
+    run: mvblog-mysql
+spec:
+  ports:
+  - port: 3306
+    protocol: TCP
+  selector:
+    run: mvblog-mysql
